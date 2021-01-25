@@ -1,0 +1,139 @@
+MACOS
+files journal - var/log
+--> journal installer /var/log/install.log
+--> 
+    System Log Folder: /var/log
+    System Log: /var/log/system.log
+    Mac Analytics Data: /var/log/DiagnosticMessages
+    System Application Logs: /Library/Logs
+    System Reports: /Library/Logs/DiagnosticReports
+    User Application Logs: ~/Library/Logs (in other words, /Users/NAME/Library/Logs)
+    User Reports: ~/Library/Logs/DiagnosticReports (in other words, /Users/NAME/Library/Logs/DiagnosticReports)
+--> system wide log messages (command log)
+--> /var/log/wifi.log
+command history - .shellname_history(.zsh_history, .bash_history $HISTFILE)
+temporary files - $TMPDIR /tmp
+users data - /Users/USERNAME
+
+LINUX
+files jornal - var/log
+--> /var/log/auth.log
+--> /var/log/kern.log
+--> /var/log/messages/journal/system.journal (journalctl)
+--> /var/log/syslog or /etc/syslog.conf /etc/rsyslog.conf
+command history - .shellname_history(.zsh_history, .bash_history $HISTFILE)
+temporary files - $TMPDIR /tmp
+users data - /home/USERNAME
+
+WINDOWS
+files jornal - Event Log
+command history - C:\Users\%username%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline
+temporary files - C:\Windows\Temp and %USERPROFILE%\AppData\Local\Temp
+users data - C:\Users\
+==========================================================================================================================================
+System Information
+
+MACOS
+Information OS Version
+--> uname -a
+
+System Information and Equipment
+--> sysctl -n machdep.cpu.brand_string - processor name
+--> system_profiler SPMemoryDataType - memory RAM info
+--> system_profiler SPStorageDataType - hardware disk info
+--> system_profiler SPDisplaysDataType - display info
+--> system_profiler SPHardwareDataType - hardware devices info
+--> system_profiler SPUSBDataType - USB info
+--> system_profiler SPEthernetDataType - ethernet info
+--> system_profiler SPPCIDataType - PCI info
+--> system_profiler SPNetworkDataType - network info
+--> system_profiler SPAirPortDataType - airports info
+--> df -H - disk usage
+Network Interface Information
+--> ifconfig
+
+Table Routing
+--> netstat -rn
+
+ARP Table
+--> arp a
+
+Port Monitor 
+--> netstat -nap TCP (TCP monitoring)
+--> netstt -nap UDP (UDP monitoring)
+
+Files System Mount
+--> mount | column -t - mountend partitions info
+
+Display Runs Process
+--> ps -e - process monitoring loops in cycle
+==========================================================================================================================================
+LINUX
+Information OS Version 
+--> uname -a
+
+System Information and Equipment
+--> lscpu or cat /proc/cpuinfo - processor name and info
+--> free -m - memory RAM info
+--> lspci - pci info
+--> lsusb - usb port info
+--> lsblk - disk partitions
+--> df -H - disk usage
+--> sudo lshw - hardware devices (sudo more hardwares)
+
+Network Interface Information
+--> ip a
+
+Table Routing
+--> route
+
+ARP Table
+--> arp a
+
+Port Monitor 
+--> netstat -nat (TCP monitoring)
+--> netstt -nau (UDP monitoring)
+
+Files System Mount
+--> mount | column -t - mountend partitions info
+
+Display Runs Process
+--> ps -e
+==========================================================================================================================================
+WINDOWS(PowerShell)
+Information OS Version
+-->(Get-WMIObject win32_operatingsystem).name - name OS
+-->(Get-WmiObject Win32_OperatingSystem).OSArchitecture - architecture OS
+-->(Get-WmiObject Win32_OperatingSystem).CSName - name computer
+
+System Information and Equipment
+--> systeminfo
+
+Network Interface Information
+--> ipconfig
+
+Table Routing
+--> route print
+
+ARP Table
+--> arp a
+
+Files System Mount
+--> net share
+
+Display Runs Process
+--> tasklist
+==========================================================================================================================================
+Browser History
+Windows XP
+C:\Documents and Settings\<username>\Application Data\Mozilla\Firefox\Profiles\<profile folder>
+C:\Documents and Settings\<username>\Local Settings\Application Data\Mozilla\Firefox\Profiles\<profile folder>\cache2
+Windows Vista, 7, 8, 10
+C:\Users\<username>\AppData\Roaming\Mozilla\Firefox\Profiles\<profile folder>
+C:\Users\<username>\AppData\Local\Mozilla\Firefox\Profiles\<profile folder>\cache2
+Mac OS X
+/Users/<username>/Library/Application Support/Firefox/Profiles/<profile folder>
+/Users/<username>/Library/Caches/Firefox/Profiles/<profile folder>/cache2
+Linux/Unix
+/home/<username>/.mozilla/firefox/<profile folder>
+/home/<username>/.cache/mozilla/firefox/<profile folder>/cache2 
