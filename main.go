@@ -35,11 +35,16 @@ type InfoMacOs interface {
 
 // SystemEquip - system equipment information
 type SystemEquip interface {
-	EquipHarware() (*models.DataHardware, error)
-	EquipProc() (string, error)
-	EquipRAM() (*models.DataMem, error)
-	EquipStorage() (*models.DataStorage, error)
-	EquipDisplay() (*models.DataDisplay, error)
+	HarwareEquip() (*models.DataHardware, error)
+	ProcEquip() (string, error)
+	RAMEquip() (*models.DataMem, error)
+	StorageEquip() (*models.DataStorage, error)
+	DisplayEquip() (*models.DataDisplay, error)
+	USBEquip() (*models.DataUSB, error)
+	NetworkEquip() (*models.DataNetwork, error)
+	AirPortEquip() (*models.DataAirPort, error)
+	EthernetEquip() (*models.DataEthernet, error)
+	PciEquip() (*models.DataPci, error)
 }
 
 // MacOSInfo - structure macos informations
@@ -155,8 +160,8 @@ func (oi *OSInfo) InfoOS() (*OSInfo, []*ResultError) {
 	return oi, outErr
 }
 
-// EquipHarware - General information equipment hardware
-func EquipHarware() (*models.DataHardware, error) {
+// HarwareEquip - General information equipment hardware
+func HarwareEquip() (*models.DataHardware, error) {
 	var hard *models.DataHardware
 
 	cmd := exec.Command("system_profiler", "-json", "SPHardwareDataType")
@@ -173,8 +178,8 @@ func EquipHarware() (*models.DataHardware, error) {
 	return hard, nil
 }
 
-// EquipProc - processor information
-func EquipProc() (string, error) {
+// ProcEquip - processor information
+func ProcEquip() (string, error) {
 	cmd := exec.Command("sysctl", "-n", "machdep.cpu.brand_string")
 	stdout, err := cmd.Output()
 	if err != nil {
@@ -184,8 +189,8 @@ func EquipProc() (string, error) {
 	return string(stdout), nil
 }
 
-// EquipRAM - RAM memory information
-func EquipRAM() (*models.DataMem, error) {
+// RAMEquip - RAM memory information
+func RAMEquip() (*models.DataMem, error) {
 	var mem *models.DataMem
 
 	cmd := exec.Command("system_profiler", "-json", "SPMemoryDataType")
@@ -202,8 +207,8 @@ func EquipRAM() (*models.DataMem, error) {
 	return mem, nil
 }
 
-// EquipStorage - storage information
-func EquipStorage() (*models.DataStorage, error) {
+// StorageEquip - storage information
+func StorageEquip() (*models.DataStorage, error) {
 	var stor *models.DataStorage
 
 	cmd := exec.Command("system_profiler", "-json", "SPStorageDataType")
@@ -220,8 +225,8 @@ func EquipStorage() (*models.DataStorage, error) {
 	return stor, nil
 }
 
-// EquipDisplay - display information
-func EquipDisplay() (*models.DataDisplay, error) {
+// DisplayEquip - display information
+func DisplayEquip() (*models.DataDisplay, error) {
 	var disp *models.DataDisplay
 
 	cmd := exec.Command("system_profiler", "-json", "SPDisplaysDataType")
@@ -238,8 +243,8 @@ func EquipDisplay() (*models.DataDisplay, error) {
 	return disp, nil
 }
 
-// EquipUSB - usb equipments information
-func EquipUSB() (*models.DataUSB, error) {
+// USBEquip - usb equipments information
+func USBEquip() (*models.DataUSB, error) {
 	var usb *models.DataUSB
 
 	cmd := exec.Command("system_profiler", "-json", "SPUSBDataType")
@@ -256,8 +261,8 @@ func EquipUSB() (*models.DataUSB, error) {
 	return usb, nil
 }
 
-// EquipNetwork - Network information
-func EquipNetwork() (*models.DataNetwork, error) {
+// NetworkEquip - Network information
+func NetworkEquip() (*models.DataNetwork, error) {
 	var netw *models.DataNetwork
 
 	cmd := exec.Command("system_profiler", "-json", "SPNetworkDataType")
@@ -274,8 +279,8 @@ func EquipNetwork() (*models.DataNetwork, error) {
 	return netw, nil
 }
 
-// EquipAirPort - AirPort information
-func EquipAirPort() (*models.DataAirPort, error) {
+// AirPortEquip - AirPort information
+func AirPortEquip() (*models.DataAirPort, error) {
 	var airp *models.DataAirPort
 
 	cmd := exec.Command("system_profiler", "-json", "SPAirPortDataType")
@@ -292,8 +297,44 @@ func EquipAirPort() (*models.DataAirPort, error) {
 	return airp, nil
 }
 
+// EthernetEquip - Ethernet information
+func EthernetEquip() (*models.DataEthernet, error) {
+	var eth *models.DataEthernet
+
+	cmd := exec.Command("system_profiler", "-json", "SPEthernetDataType")
+	stdout, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("Failed execution command: %v", err)
+	}
+
+	json.Unmarshal(stdout, &eth)
+	if err != nil {
+		return nil, fmt.Errorf("Failed unmarshaling: %v", err)
+	}
+
+	return eth, nil
+}
+
+// PciEquip - PCI information
+func PciEquip() (*models.DataPci, error) {
+	var pci *models.DataPci
+
+	cmd := exec.Command("system_profiler", "-json", "SPPCIDataType")
+	stdout, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("Failed execution command: %v", err)
+	}
+
+	json.Unmarshal(stdout, &pci)
+	if err != nil {
+		return nil, fmt.Errorf("Failed unmarshaling: %v", err)
+	}
+
+	return pci, nil
+}
+
 func main() {
-	/*var resOsInfo *OSInfo
+	var resOsInfo *OSInfo
 
 	resOsInfo, resErr := resOsInfo.InfoOS()
 	for _, valr := range resErr {
@@ -301,52 +342,63 @@ func main() {
 	}
 	fmt.Print(resOsInfo.KernVer)
 
-	resProcInfo, err := EquipProc()
+	resProcInfo, err := ProcEquip()
 	if err != nil {
 		log.Printf("Failed execution command: %v", err)
 	}
 	fmt.Print(resProcInfo)
 
-	resRAMInfo, err := EquipRAM()
+	resRAMInfo, err := RAMEquip()
 	if err != nil {
 		log.Printf("Failed execution command: %v", err)
 	}
 	fmt.Print(resRAMInfo)
 
-	resStorInfo, err := EquipStorage()
+	resStorInfo, err := StorageEquip()
 	if err != nil {
 		log.Printf("Failed execution command: %v", err)
 	}
 	fmt.Print(resStorInfo)
 
-	resDispInfo, err := EquipDisplay()
+	resDispInfo, err := DisplayEquip()
 	if err != nil {
 		log.Printf("Failed execution command: %v", err)
 	}
 	fmt.Print(resDispInfo)
 
-	resHardInfo, err := EquipHarware()
+	resHardInfo, err := HarwareEquip()
 	if err != nil {
 		log.Printf("Failed execution command: %v", err)
 	}
 	fmt.Print(resHardInfo)
 
-	resUsbInfo, err := EquipUSB()
+	resUsbInfo, err := USBEquip()
 	if err != nil {
 		log.Printf("Failed execution command: %v", err)
 	}
 	fmt.Print(resUsbInfo)
 
-	resNetworkInfo, err := EquipNetwork()
+	resNetworkInfo, err := NetworkEquip()
 	if err != nil {
 		log.Printf("Failed execution command: %v", err)
 	}
 	fmt.Print(resNetworkInfo)
-	*/
 
-	resAirPortInfo, err := EquipAirPort()
+	resAirPortInfo, err := AirPortEquip()
 	if err != nil {
 		log.Printf("Failed execution command: %v", err)
 	}
 	fmt.Print(resAirPortInfo)
+
+	resPciInfo, err := PciEquip()
+	if err != nil {
+		log.Printf("Failed execution command: %v", err)
+	}
+	fmt.Print(resPciInfo)
+
+	resEthernetInfo, err := EthernetEquip()
+	if err != nil {
+		log.Printf("Failed execution command: %v", err)
+	}
+	fmt.Print(resEthernetInfo)
 }

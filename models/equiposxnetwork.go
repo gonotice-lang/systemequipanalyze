@@ -10,7 +10,7 @@ type NetworkData struct {
 	AdapterName     string       `json:"_name"`                   // Name device
 	DHCPData        DHCPData     `json:"dhcp,omitempty"`          // DHCP Server Responses
 	DNSData         DNSData      `json:"DNS,omitempty"`           // DNS
-	EthernetData    EthernetData `json:"Ethernet,omitempty"`      // Ethernet
+	EthernetInfo    EthernetInfo `json:"Ethernet,omitempty"`      // Ethernet
 	Hardware        string       `json:"hardware"`                // Hardware Name
 	Interface       string       `json:"interface"`               // Interface Name:
 	IPaddr          []string     `json:"ip_address,omitempty"`    // IPv4 Addresses
@@ -36,8 +36,8 @@ type DNSData struct {
 	ServerAddr []string `json:"ServerAddresses"` // Server Addresses
 }
 
-// EthernetData - Ethernet information
-type EthernetData struct {
+// EthernetInfo - Ethernet information
+type EthernetInfo struct {
 	MACAddr      string   `json:"MAC Address,omitempty"`  // MAC Address
 	MediaOpt     []string `json:"MediaOptions,omitempty"` // Media Options
 	MediaSubType string   `json:"MediaSubType,omitempty"` // Media Subtype
