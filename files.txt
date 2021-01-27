@@ -3,7 +3,7 @@ files journal - var/log
 --> journal installer /var/log/install.log
 --> 
     System Log Folder: /var/log
-    System Log: /var/log/system.log
+    System Log: /var/log/system.log (system_profiler SPSyncServicesDataType)
     Mac Analytics Data: /var/log/DiagnosticMessages
     System Application Logs: /Library/Logs
     System Reports: /Library/Logs/DiagnosticReports
@@ -48,6 +48,7 @@ System Information and Equipment
 --> system_profiler SPPCIDataType - PCI info
 --> system_profiler SPNetworkDataType - network info
 --> system_profiler SPAirPortDataType - airports info
+--> system_profiler SPPowerDataType - system power info
 --> df -H - disk usage
 Network Interface Information
 --> ifconfig

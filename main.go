@@ -1,8 +1,8 @@
 package main
 
 import (
-	"analyzes/models"
 	"encoding/json"
+	"equipanalyze/models"
 	"fmt"
 	"log"
 	"os/exec"
@@ -333,8 +333,26 @@ func PciEquip() (*models.DataPci, error) {
 	return pci, nil
 }
 
+// PowerEquip - Power information
+func PowerEquip() (*models.DataPower, error) {
+	var power *models.DataPower
+
+	cmd := exec.Command("system_profiler", "-json", "SPPowerDataType")
+	stdout, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("Failed execution command: %v", err)
+	}
+
+	json.Unmarshal(stdout, &power)
+	if err != nil {
+		return nil, fmt.Errorf("Failed unmarshaling: %v", err)
+	}
+
+	return power, nil
+}
+
 func main() {
-	var resOsInfo *OSInfo
+	/*var resOsInfo *OSInfo
 
 	resOsInfo, resErr := resOsInfo.InfoOS()
 	for _, valr := range resErr {
@@ -401,4 +419,10 @@ func main() {
 		log.Printf("Failed execution command: %v", err)
 	}
 	fmt.Print(resEthernetInfo)
+	*/
+	resPowerInfo, err := PowerEquip()
+	if err != nil {
+		log.Printf("Failed execution command: %v", err)
+	}
+	fmt.Print(resPowerInfo)
 }
