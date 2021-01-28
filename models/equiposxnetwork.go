@@ -50,8 +50,8 @@ type IPv4Data struct {
 	ARPHardResolv string     `json:"ARPResolvedHardwareAddress,omitempty"` // ARP Resolved Hardware Address
 	ARPIPResolv   string     `json:"RPResolvedIPAddress,omitempty"`        // ARP Resolved IP Address
 	ConfMethod    string     `json:"ConfigMethod"`                         // Configuration Method
-	ConfIntName   string     `json:"ConfirmedInterfaceName,omitempty"`     // Confirmed Interface Name
-	IntName       string     `json:"InterfaceName,omitempty"`              // Interface Name
+	ConfIntfName  string     `json:"ConfirmedInterfaceName,omitempty"`     // Confirmed Interface Name
+	IntfName      string     `json:"InterfaceName,omitempty"`              // Interface Name
 	NetSign       string     `json:"NetworkSignature,omitempty"`           // Network Signature
 	Router        string     `json:"Router,omitempty"`                     // Router
 	SubnetMasks   []string   `json:"SubnetMasks,omitempty"`                // Subnet Masks
@@ -65,7 +65,11 @@ type AddRoute struct {
 
 // IPv6Data - IPv6 information
 type IPv6Data struct {
-	ConfMethod string `json:"ConfigMethod"` //Configuration Method
+	Addresses    []string `json:"Addresses,omitempty"`              // Addresses
+	ConfMethod   string   `json:"ConfigMethod"`                     // Configuration Method
+	ConfIntfName string   `json:"ConfirmedInterfaceName,omitempty"` // Confirmed Interface Name
+	IntfName     string   `json:"InterfaceName,omitempty"`          // Interface Name
+	PrefixLeght  []string `json:"PrefixLength,omitempty"`           // Prefix Length
 }
 
 // ProxiesData - Proxies data information

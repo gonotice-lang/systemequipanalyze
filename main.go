@@ -1,8 +1,8 @@
 package main
 
 import (
+	"analyzes/models"
 	"encoding/json"
-	"equipanalyze/models"
 	"fmt"
 	"log"
 	"os/exec"
@@ -351,78 +351,104 @@ func PowerEquip() (*models.DataPower, error) {
 	return power, nil
 }
 
+// PrinterEquip - Printer information
+func PrinterEquip() (*models.DataPrinter, error) {
+	var printer *models.DataPrinter
+
+	cmd := exec.Command("system_profiler", "-json", "SPPrintersDataType")
+	stdout, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("Failed execution command: %v", err)
+	}
+
+	json.Unmarshal(stdout, &printer)
+	if err != nil {
+		return nil, fmt.Errorf("Failed unmarshaling: %v", err)
+	}
+
+	return printer, nil
+}
+
 func main() {
-	/*var resOsInfo *OSInfo
+	/*
+		var resOsInfo *OSInfo
 
-	resOsInfo, resErr := resOsInfo.InfoOS()
-	for _, valr := range resErr {
-		log.Printf("Error: %s in function number \"%d\", %v\n", valr.res.ErrorName, valr.res.NumbOccur, valr.err)
-	}
-	fmt.Print(resOsInfo.KernVer)
+		resOsInfo, resErr := resOsInfo.InfoOS()
+		for _, valr := range resErr {
+			log.Printf("Error: %s in function number \"%d\", %v\n", valr.res.ErrorName, valr.res.NumbOccur, valr.err)
+		}
+		fmt.Print(resOsInfo.KernVer)
 
-	resProcInfo, err := ProcEquip()
-	if err != nil {
-		log.Printf("Failed execution command: %v", err)
-	}
-	fmt.Print(resProcInfo)
+		resProcInfo, err := ProcEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resProcInfo)
 
-	resRAMInfo, err := RAMEquip()
-	if err != nil {
-		log.Printf("Failed execution command: %v", err)
-	}
-	fmt.Print(resRAMInfo)
+		resRAMInfo, err := RAMEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resRAMInfo)
 
-	resStorInfo, err := StorageEquip()
-	if err != nil {
-		log.Printf("Failed execution command: %v", err)
-	}
-	fmt.Print(resStorInfo)
+		resStorInfo, err := StorageEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resStorInfo)
 
-	resDispInfo, err := DisplayEquip()
-	if err != nil {
-		log.Printf("Failed execution command: %v", err)
-	}
-	fmt.Print(resDispInfo)
+		resDispInfo, err := DisplayEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resDispInfo)
 
-	resHardInfo, err := HarwareEquip()
-	if err != nil {
-		log.Printf("Failed execution command: %v", err)
-	}
-	fmt.Print(resHardInfo)
+		resHardInfo, err := HarwareEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resHardInfo)
 
-	resUsbInfo, err := USBEquip()
-	if err != nil {
-		log.Printf("Failed execution command: %v", err)
-	}
-	fmt.Print(resUsbInfo)
+		resUsbInfo, err := USBEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resUsbInfo)
 
-	resNetworkInfo, err := NetworkEquip()
-	if err != nil {
-		log.Printf("Failed execution command: %v", err)
-	}
-	fmt.Print(resNetworkInfo)
+		resNetworkInfo, err := NetworkEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resNetworkInfo)
 
-	resAirPortInfo, err := AirPortEquip()
-	if err != nil {
-		log.Printf("Failed execution command: %v", err)
-	}
-	fmt.Print(resAirPortInfo)
+		resAirPortInfo, err := AirPortEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resAirPortInfo)
 
-	resPciInfo, err := PciEquip()
-	if err != nil {
-		log.Printf("Failed execution command: %v", err)
-	}
-	fmt.Print(resPciInfo)
+		resPciInfo, err := PciEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resPciInfo)
 
-	resEthernetInfo, err := EthernetEquip()
-	if err != nil {
-		log.Printf("Failed execution command: %v", err)
-	}
-	fmt.Print(resEthernetInfo)
+		resEthernetInfo, err := EthernetEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resEthernetInfo)
+
+		resPowerInfo, err := PowerEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resPowerInfo)
 	*/
-	resPowerInfo, err := PowerEquip()
+
+	resPrinterInfo, err := PrinterEquip()
 	if err != nil {
 		log.Printf("Failed execution command: %v", err)
 	}
-	fmt.Print(resPowerInfo)
+	fmt.Print(resPrinterInfo)
 }
