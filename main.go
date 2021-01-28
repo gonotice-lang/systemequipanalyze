@@ -1,12 +1,12 @@
 package main
 
 import (
-	"analyzes/models"
 	"encoding/json"
 	"fmt"
 	"log"
 	"os/exec"
 	"strings"
+	"systemequipanalyze/models"
 )
 
 // ResultError - Information errors in goroutines
