@@ -61,7 +61,7 @@ ARP Table
 
 Port Monitor 
 --> netstat -nap TCP (TCP monitoring)
---> netstt -nap UDP (UDP monitoring)
+--> netstat -nap UDP (UDP monitoring)
 
 Files System Mount
 --> mount | column -t - mountend partitions info
@@ -89,7 +89,7 @@ Table Routing
 --> route
 
 ARP Table
---> arp a
+--> arp -a
 
 Port Monitor 
 --> netstat -nat (TCP monitoring)
