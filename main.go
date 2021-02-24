@@ -23,16 +23,16 @@ type ResErr struct {
 
 // InfoMacOs - Informations Mac OS
 type InfoMacOs interface {
-	InfoOS() (*OSInfo, []*ResultError) // Name os and arrays error
-	SystemEquip() *SysEq               // System equip information
-	NetInterfacesInfo() string         // Net interfaces
-	RoutingTableInfo() string          // Table routing
-	ArpTable() string                  // Arp table routing
-	PortInfo(string) []*PortInfo       // Port info information
-	FilesSystemMount() string          // Files system mounted information
-	ProcessInfo() []*ProcessInfo       // Information launched process
-	DiskUsage() []*DiskUsageInfo       // Disk usage information
-	ProcEquip() (string, error)        // Processor name information
+	InfoOS() (*OSInfo, []*ResultError)  // Name os and arrays error
+	SystemEquip() *SysEq                // System equip information
+	NetInterfacesInfo() string          // Net interfaces
+	RoutingTableInfo() string           // Table routing
+	ArpTable() string                   // Arp table routing
+	PortInfo(string) []*PortInfo        // Port info information
+	FilesSystemMount() string           // Files system mounted information
+	ProcessInfo() []*ProcessInfo        // Information launched process
+	DiskUsage() []*models.DiskUsageInfo // Disk usage information
+	ProcEquip() (string, error)         // Processor name information
 }
 
 // SystemEquip - system equipment information
@@ -98,44 +98,6 @@ type ProcessInfo struct {
 	ProcTty  string
 	ProcTime string
 	ProcCmd  string
-}
-
-// DiskUsageInfo - Information disk usage
-type DiskUsageInfo struct {
-	FileSys     string
-	Size        string
-	Used        string
-	Avail       string
-	Capacity    string
-	IUsed       string
-	IFree       string
-	ProcentUsed string
-	Mounted     string
-}
-
-// NetStatConn - Running network services information
-type NetStatConn struct {
-	Proto       string
-	RecvQ       string
-	SendQ       string
-	LocalAddr   string
-	ForeignAddr string
-	State       string
-}
-
-// NetStatRoute - Table network routing information
-type NetStatRoute struct {
-	VerIP     string
-	RouteInfo []*RouteInfo
-}
-
-// RouteInfo - routing information
-type RouteInfo struct {
-	Dst     string
-	Gateway string
-	Flags   string
-	Netif   string
-	Expire  string
 }
 
 // ARPInfo - ARP table information
@@ -420,10 +382,10 @@ func removeIndex(s []string, count, index int) []string {
 }
 
 // DiskUsage -  Disk usage information
-func DiskUsage() ([]*DiskUsageInfo, error) {
+func DiskUsage() ([]*models.DiskUsageInfo, error) {
 	//var keys string
-	var newDiskUs = new(DiskUsageInfo)
-	var resDiskUsage []*DiskUsageInfo
+	var newDiskUs = new(models.DiskUsageInfo)
+	var resDiskUsage []*models.DiskUsageInfo
 
 	cmd := exec.Command("df", "-H")
 	stdout, err := cmd.Output()
@@ -448,7 +410,7 @@ func DiskUsage() ([]*DiskUsageInfo, error) {
 		val = re.ReplaceAllString(val, "map_auto_home")
 		valFields := strings.Fields(val)
 		for range valFields {
-			newDiskUs = &DiskUsageInfo{
+			newDiskUs = &models.DiskUsageInfo{
 				FileSys:     valFields[0],
 				Size:        valFields[1],
 				Used:        valFields[2],
@@ -466,11 +428,11 @@ func DiskUsage() ([]*DiskUsageInfo, error) {
 }
 
 // NetStatConnInfo - Internet connect information
-func NetStatConnInfo(key, arg string) ([]*NetStatConn, error) {
+func NetStatConnInfo(key, arg string) ([]*models.NetStatConn, error) {
 	var cmd *exec.Cmd
 
-	var newNetStatConn = new(NetStatConn)
-	var resNetStatConn []*NetStatConn
+	var newNetStatConn = new(models.NetStatConn)
+	var resNetStatConn []*models.NetStatConn
 
 	cmd = exec.Command("netstat", key, arg)
 	stdout, err := cmd.Output()
@@ -493,7 +455,7 @@ func NetStatConnInfo(key, arg string) ([]*NetStatConn, error) {
 			valFields = append(valFields, "-")
 		}
 		for range valFields {
-			newNetStatConn = &NetStatConn{
+			newNetStatConn = &models.NetStatConn{
 				Proto:       valFields[0],
 				RecvQ:       valFields[1],
 				SendQ:       valFields[2],
@@ -510,7 +472,7 @@ func NetStatConnInfo(key, arg string) ([]*NetStatConn, error) {
 }
 
 // NetStatRouteInfo - Table routing information
-func NetStatRouteInfo(key, arg string) (*NetStatRoute, error) {
+func NetStatRouteInfo(key, arg string) (*models.NetStatRoute, error) {
 	var cmd *exec.Cmd
 	var verIP string
 
@@ -521,8 +483,8 @@ func NetStatRouteInfo(key, arg string) (*NetStatRoute, error) {
 		verIP = "IPv6"
 	}
 
-	var newRouteInfo = new(RouteInfo)
-	var resRouteInfo []*RouteInfo
+	var newRouteInfo = new(models.RouteInfo)
+	var resRouteInfo []*models.RouteInfo
 
 	cmd = exec.Command("netstat", key, arg)
 	stdout, err := cmd.Output()
@@ -545,7 +507,7 @@ func NetStatRouteInfo(key, arg string) (*NetStatRoute, error) {
 			valFields = append(valFields, "-")
 		}
 		for range valFields {
-			newRouteInfo = &RouteInfo{
+			newRouteInfo = &models.RouteInfo{
 				Dst:     valFields[0],
 				Gateway: valFields[1],
 				Flags:   valFields[2],
@@ -557,7 +519,7 @@ func NetStatRouteInfo(key, arg string) (*NetStatRoute, error) {
 		resRouteInfo = append(resRouteInfo, newRouteInfo)
 	}
 
-	resNetStatRoute := &NetStatRoute{
+	resNetStatRoute := &models.NetStatRoute{
 		VerIP:     verIP,
 		RouteInfo: resRouteInfo,
 	}
@@ -604,121 +566,224 @@ func ARPTableInfo() ([]*ARPInfo, error) {
 	return resArp, err
 }
 
+func subSlices(slice []string) [][]string {
+	var ss [][]string
+	for _, e := range slice {
+		if e[0] != 9 || len(ss) == 0 {
+			ss = append(ss, make([]string, 0, 3))
+		}
+		end := len(ss) - 1
+		e = strings.ReplaceAll(e, "\t", "")
+		ss[end] = append(ss[end], e)
+	}
+
+	return ss
+}
+
+// NetworkIntInfo - information networks interfaces
+func NetworkIntInfo() error {
+	//var resNetInfInfo []*models.NetIntInfo
+	var resNetInf *models.NetIntInfo
+	var resOptions string
+
+	cmd := exec.Command("ifconfig")
+	stdout, err := cmd.Output()
+	if err != nil {
+		return fmt.Errorf("\"%s\" %v", cmd, err)
+	}
+
+	// delete last line break
+	if len(stdout) > 0 {
+		stdout = stdout[:len(stdout)-1]
+	}
+
+	reInf, _ := regexp.Compile(`[A-Za-z_0-9]*`)
+	reFlag, _ := regexp.Compile(`flags=[0-9]*<([A-Z0-9]*_*,*)*>`)
+	reMtu, _ := regexp.Compile(`mtu\s[0-9]*`)
+	//reInet6, _ := regexp.Compile(`([0-9A-Fa-f%a-z0-9]{1,4}:*){8}|\s:{2}1|fe80::1%[a-z0-9]*`)
+
+	res := strings.Split(string(stdout), "\n")
+
+	for _, sub := range subSlices(res) {
+		resInf := reInf.FindAllString(sub[0], 1)
+		resFlag := reFlag.FindAllString(sub[0], 1)
+		resMtu := reMtu.FindAllString(sub[0], 1)
+
+		matchOpts, _ := regexp.MatchString(`^options=[0-9]*<([A-Z0-9]*_*,*)*>`, sub[1:2][0])
+		if matchOpts {
+			resOptions = sub[1:2][0]
+		} else {
+			resOptions = ""
+		}
+
+		resEther := []string{}
+		//resInet6Addr := &models.Inet6{}
+
+		for _, v := range sub {
+			if strings.Contains(v, "ether") {
+				fEther := strings.Fields(v)
+				ether := append(make([]string, 0, 3), fEther[1])
+				resEther = ether
+			}
+
+			if strings.Contains(v, "inet6") {
+				//resInet6 := reInet6.FindAllString(v, 1)
+				fInet6 := strings.Fields(v)
+
+				var resScopeid string
+				var resParamPrefix string
+
+				for k, val := range fInet6[4:] {
+					if fInet6[4:][k] == "scopeid" {
+						resScopeid = fInet6[4:][k+1]
+					}
+					if val != "scopeid" {
+						resParamPrefix = resParamPrefix + " " + val
+					} else {
+						break
+					}
+				}
+
+				fmt.Println(resScopeid)
+				fmt.Println(fInet6[1])
+				fmt.Println(fInet6[3] + resParamPrefix)
+			}
+		}
+
+		resNetInf = &models.NetIntInfo{
+			NameInterface: resInf[0],
+			Flags:         resFlag[0],
+			Mtu:           strings.ReplaceAll(resMtu[0], "mtu", ""),
+			Options:       resOptions,
+			Ether:         resEther,
+		}
+
+		fmt.Println(resNetInf)
+
+	}
+	return nil
+}
+
+/*if strings.Contains(v, "options=") {
+	fmt.Println("KEY: ", k, "VALUE: ", v)
+}*/
+
 func main() {
 	/*
-		var resOsInfo *OSInfo
+			var resOsInfo *OSInfo
 
-						resOsInfo, resErr := resOsInfo.InfoOS()
-						for _, valr := range resErr {
-							log.Printf("Error: %s in function number \"%d\", %v\n", valr.res.ErrorName, valr.res.NumbOccur, valr.err)
-						}
-						fmt.Print(resOsInfo.KernVer)
+							resOsInfo, resErr := resOsInfo.InfoOS()
+							for _, valr := range resErr {
+								log.Printf("Error: %s in function number \"%d\", %v\n", valr.res.ErrorName, valr.res.NumbOccur, valr.err)
+							}
+							fmt.Print(resOsInfo.KernVer)
 
-						resProcInfo, err := ProcEquip()
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						fmt.Print(resProcInfo)
+							resProcInfo, err := ProcEquip()
+							if err != nil {
+								log.Printf("Failed execution command: %v", err)
+							}
+							fmt.Print(resProcInfo)
 
-						resRAMInfo, err := RAMEquip()
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						fmt.Print(resRAMInfo)
+							resRAMInfo, err := RAMEquip()
+							if err != nil {
+								log.Printf("Failed execution command: %v", err)
+							}
+							fmt.Print(resRAMInfo)
 
-						resStorInfo, err := StorageEquip()
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						fmt.Print(resStorInfo)
+							resStorInfo, err := StorageEquip()
+							if err != nil {
+								log.Printf("Failed execution command: %v", err)
+							}
+							fmt.Print(resStorInfo)
 
-						resDispInfo, err := DisplayEquip()
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						fmt.Print(resDispInfo)
+							resDispInfo, err := DisplayEquip()
+							if err != nil {
+								log.Printf("Failed execution command: %v", err)
+							}
+							fmt.Print(resDispInfo)
 
-						resHardInfo, err := HarwareEquip()
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						fmt.Print(resHardInfo)
+							resHardInfo, err := HarwareEquip()
+							if err != nil {
+								log.Printf("Failed execution command: %v", err)
+							}
+							fmt.Print(resHardInfo)
 
-						resUsbInfo, err := USBEquip()
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						fmt.Print(resUsbInfo)
+							resUsbInfo, err := USBEquip()
+							if err != nil {
+								log.Printf("Failed execution command: %v", err)
+							}
+							fmt.Print(resUsbInfo)
 
-						resNetworkInfo, err := NetworkEquip()
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						fmt.Print(resNetworkInfo)
+							resNetworkInfo, err := NetworkEquip()
+							if err != nil {
+								log.Printf("Failed execution command: %v", err)
+							}
+							fmt.Print(resNetworkInfo)
 
-						resAirPortInfo, err := AirPortEquip()
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						fmt.Print(resAirPortInfo)
+							resAirPortInfo, err := AirPortEquip()
+							if err != nil {
+								log.Printf("Failed execution command: %v", err)
+							}
+							fmt.Print(resAirPortInfo)
 
-						resPciInfo, err := PciEquip()
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						fmt.Print(resPciInfo)
+							resPciInfo, err := PciEquip()
+							if err != nil {
+								log.Printf("Failed execution command: %v", err)
+							}
+							fmt.Print(resPciInfo)
 
-						resEthernetInfo, err := EthernetEquip()
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						fmt.Print(resEthernetInfo)
+							resEthernetInfo, err := EthernetEquip()
+							if err != nil {
+								log.Printf("Failed execution command: %v", err)
+							}
+							fmt.Print(resEthernetInfo)
 
-						resPowerInfo, err := PowerEquip()
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						fmt.Print(resPowerInfo)
+							resPowerInfo, err := PowerEquip()
+							if err != nil {
+								log.Printf("Failed execution command: %v", err)
+							}
+							fmt.Print(resPowerInfo)
 
-						resPrinterInfo, err := PrinterEquip()
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						fmt.Print(resPrinterInfo)
+							resPrinterInfo, err := PrinterEquip()
+							if err != nil {
+								log.Printf("Failed execution command: %v", err)
+							}
+							fmt.Print(resPrinterInfo)
 
-						resDiskUsage, err := DiskUsage()
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						for _, res := range resDiskUsage {
-							fmt.Println(*res)
-						}
+							resDiskUsage, err := DiskUsage()
+							if err != nil {
+								log.Printf("Failed execution command: %v", err)
+							}
+							for _, res := range resDiskUsage {
+								fmt.Println(*res)
+							}
 
-						resNetStatConn, err := NetStatConnInfo("-nap", "TCP")
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						for _, res := range resNetStatConn {
-							fmt.Println(*res)
-						}
+							resNetStatConn, err := NetStatConnInfo("-nap", "TCP")
+							if err != nil {
+								log.Printf("Failed execution command: %v", err)
+							}
+							for _, res := range resNetStatConn {
+								fmt.Println(*res)
+							}
 
-						resNetStatRoute, err := NetStatRouteInfo("-rnf", "inet")
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
+							resNetStatRoute, err := NetStatRouteInfo("-rnf", "inet")
+							if err != nil {
+								log.Printf("Failed execution command: %v", err)
+							}
 
-						fmt.Println("IP version: ", resNetStatRoute.VerIP)
-						for _, res := range resNetStatRoute.RouteInfo {
-							fmt.Println(*res)
-						}
+							fmt.Println("IP version: ", resNetStatRoute.VerIP)
+							for _, res := range resNetStatRoute.RouteInfo {
+								fmt.Println(*res)
+							}
 
 
-						resArpTable, err := ARPTableInfo()
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						for _, res := range resArpTable {
-							fmt.Println(*res)
-						}
+		resArpTable, err := ARPTableInfo()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		for _, res := range resArpTable {
+			fmt.Println(*res)
+		}
 	*/
+	NetworkIntInfo()
 }
