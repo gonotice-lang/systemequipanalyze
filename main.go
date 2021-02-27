@@ -582,9 +582,7 @@ func subSlices(slice []string) [][]string {
 
 // NetworkIntInfo - information networks interfaces
 func NetworkIntInfo() error {
-	//var resNetInfInfo []*models.NetIntInfo
-	var resNetInf *models.NetIntInfo
-	var resOptions string
+	var resNetInfInfo []*models.NetIntInfo
 
 	cmd := exec.Command("ifconfig")
 	stdout, err := cmd.Output()
@@ -600,34 +598,78 @@ func NetworkIntInfo() error {
 	reInf, _ := regexp.Compile(`[A-Za-z_0-9]*`)
 	reFlag, _ := regexp.Compile(`flags=[0-9]*<([A-Z0-9]*_*,*)*>`)
 	reMtu, _ := regexp.Compile(`mtu\s[0-9]*`)
+	reInet, _ := regexp.Compile(`^inet\s`)
 	//reInet6, _ := regexp.Compile(`([0-9A-Fa-f%a-z0-9]{1,4}:*){8}|\s:{2}1|fe80::1%[a-z0-9]*`)
 
 	res := strings.Split(string(stdout), "\n")
 
 	for _, sub := range subSlices(res) {
+		var (
+			resOptions    string
+			resNd6Options string
+			resMedia      string
+			resStatus     string
+		)
+
 		resInf := reInf.FindAllString(sub[0], 1)
 		resFlag := reFlag.FindAllString(sub[0], 1)
 		resMtu := reMtu.FindAllString(sub[0], 1)
 
+		// checking matching options value
 		matchOpts, _ := regexp.MatchString(`^options=[0-9]*<([A-Z0-9]*_*,*)*>`, sub[1:2][0])
 		if matchOpts {
 			resOptions = sub[1:2][0]
-		} else {
-			resOptions = ""
 		}
 
-		resEther := []string{}
-		//resInet6Addr := &models.Inet6{}
+		resEther, resConfigMem := []string{}, []string{}
+		resInetAddr := &models.Inet{}
+		resInet6Addr := []*models.Inet6{}
 
-		for _, v := range sub {
+		for s, v := range sub {
+			// search and assignment ether value
 			if strings.Contains(v, "ether") {
 				fEther := strings.Fields(v)
 				ether := append(make([]string, 0, 3), fEther[1])
 				resEther = ether
 			}
+			// checking and distribution configuration fields
+			if strings.Contains(sub[s], "Configuration:") {
+				for _, vs := range sub[s+1:] {
+					if vs[0] == 32 {
+						vs = strings.Replace(vs, " ", "", 8)
+					}
+					resConfigMem = append(resConfigMem, vs)
+					if strings.Contains(vs, "ifmaxaddr") {
+						break
+					}
+				}
+			}
+			// checking and distribution inet fields
+			if reInet.MatchString(v) {
+				fInet := strings.Fields(v)
 
+				netmask, broadcast := "", ""
+				inetAddr := fInet[1]
+
+				for k := range fInet {
+					if fInet[k] == "netmask" {
+						netmask = fInet[k+1]
+					}
+					if fInet[k] == "broadcast" {
+						broadcast = fInet[k+1]
+					}
+				}
+
+				resInetAddr = &models.Inet{
+					InetAddr:  inetAddr,
+					Netmask:   netmask,
+					Broadcast: broadcast,
+				}
+			}
+
+			// checking and distribution inet6 fields
 			if strings.Contains(v, "inet6") {
-				//resInet6 := reInet6.FindAllString(v, 1)
+				// resInet6 := reInet6.FindAllString(v, 1)
 				fInet6 := strings.Fields(v)
 
 				var resScopeid string
@@ -644,29 +686,64 @@ func NetworkIntInfo() error {
 					}
 				}
 
-				fmt.Println(resScopeid)
-				fmt.Println(fInet6[1])
-				fmt.Println(fInet6[3] + resParamPrefix)
+				resInet6Addr = append(resInet6Addr, &models.Inet6{
+					Inet6Addr: fInet6[1],
+					Prefixlen: fInet6[3] + resParamPrefix,
+					ScopeID:   resScopeid,
+				})
 			}
+
+			// checking and distribution nd6 options fields
+			matchNd6Opts, _ := regexp.MatchString(`^nd6\soptions=[0-9]*<([A-Z0-9]*_*,*)*>`, v)
+			if matchNd6Opts {
+				resNd6Options = strings.ReplaceAll(v, "nd6 ", "")
+			}
+
+			// checking and distribution media fields
+			if strings.Contains(v, "media: ") {
+				resMedia = strings.ReplaceAll(v, "media: ", "")
+			}
+
+			// checking and distribution status fields
+			if strings.Contains(v, "status: ") {
+				resStatus = strings.ReplaceAll(v, "status: ", "")
+			}
+
 		}
 
-		resNetInf = &models.NetIntInfo{
+		resNetInfInfo = append(resNetInfInfo, &models.NetIntInfo{
 			NameInterface: resInf[0],
 			Flags:         resFlag[0],
-			Mtu:           strings.ReplaceAll(resMtu[0], "mtu", ""),
+			Mtu:           strings.ReplaceAll(resMtu[0], "mtu ", ""),
 			Options:       resOptions,
 			Ether:         resEther,
-		}
-
-		fmt.Println(resNetInf)
-
+			ConfigMember:  resConfigMem,
+			Inet:          resInetAddr,
+			Inet6:         resInet6Addr,
+			Nd6Options:    resNd6Options,
+			Media:         resMedia,
+			Status:        resStatus,
+		})
 	}
+
+	for _, res := range resNetInfInfo {
+		fmt.Println(res.NameInterface)
+		fmt.Println(res.Flags)
+		fmt.Println(res.Mtu)
+		fmt.Println(res.Options)
+		fmt.Println(res.Ether)
+		fmt.Println(res.ConfigMember)
+		fmt.Println(*res.Inet)
+		for _, resInet6 := range res.Inet6 {
+			fmt.Println(resInet6.Inet6Addr, resInet6.Prefixlen, resInet6.ScopeID)
+		}
+		fmt.Println(res.Nd6Options)
+		fmt.Println(res.Media)
+		fmt.Println(res.Status)
+	}
+
 	return nil
 }
-
-/*if strings.Contains(v, "options=") {
-	fmt.Println("KEY: ", k, "VALUE: ", v)
-}*/
 
 func main() {
 	/*

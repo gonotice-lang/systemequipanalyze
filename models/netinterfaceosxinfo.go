@@ -7,10 +7,12 @@ type NetIntInfo struct {
 	Mtu           string   `json:"mtu,omitempty"`
 	Options       string   `json:"options,omitempty"`
 	Ether         []string `json:"ether,omitempty"`
-	Inet          []Inet   `json:"inet,omitempty"`
-	Inet6         []Inet6  `json:"inet6,omitempty"`
+	ConfigMember  []string `json:"configmember,omitempty"`
+	Inet          *Inet    `json:"inet,omitempty"`
+	Inet6         []*Inet6 `json:"inet6,omitempty"`
+	Nd6Options    string   `json:"nd6options,omitempty"`
+	Media         string   `json:"media,omitempty"`
 	Status        string   `json:"status,omitempty"`
-	Others        string   `json:"others,omitempty"`
 }
 
 // Inet - Information Inet Interface

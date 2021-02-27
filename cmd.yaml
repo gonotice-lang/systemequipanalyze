@@ -1,6 +1,14 @@
-macos:
+macoscmds:
+  ifconfig:
+    cmd: ifconfig
   uname:
     cmd: uname
+    key: -a
+  diskusage: 
+    cmd: df
+    key: -H
+  arp:
+    cmd: arp
     key: -a
   systeminfo:
     cmd: sysctl
@@ -15,12 +23,7 @@ macos:
     cmd: netstat
     keys: [-nap, -rnf]
     args: [TCP, UDP, inet, inet6]
-  diskusage: 
-    cmd: df
-    key: -H
-  arp:
-    cmd: arp
-    key: -a
+linuxcmds:
 
   
   
