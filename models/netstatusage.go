@@ -1,7 +1,7 @@
 package models
 
-// NetStatConn - Running network services information
-type NetStatConn struct {
+// NSConn - Running network services information
+type NSConn struct {
 	Proto       string
 	RecvQ       string
 	SendQ       string
@@ -10,8 +10,8 @@ type NetStatConn struct {
 	State       string
 }
 
-// NetStatRoute - Table network routing information
-type NetStatRoute struct {
+// NSRoute - Table network routing information
+type NSRoute struct {
 	VerIP     string
 	RouteInfo []*RouteInfo
 }
