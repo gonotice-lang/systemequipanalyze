@@ -2,12 +2,12 @@ package models
 
 // DataMem - Memory data type information
 type DataMem struct {
-	MemData []MemData `json:"SPMemoryDataType"` // Memory Slots
+	MemData []*MemData `json:"SPMemoryDataType"` // Memory Slots
 }
 
 // MemData - Items Bank memory and global information
 type MemData struct {
-	Items []Item `json:"_items"` // Array BANK memory
+	Items []*Item `json:"_items"` // Array BANK memory
 	//Name     string `json:"_name"`                 // field name Global
 	EccState string `json:"global_ecc_state"`      // ECC
 	MemUpgr  string `json:"is_memory_upgradeable"` //  Upgradeable Memory

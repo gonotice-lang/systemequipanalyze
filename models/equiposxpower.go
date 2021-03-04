@@ -2,14 +2,14 @@ package models
 
 // DataPower - Power settings data type information
 type DataPower struct {
-	PowerDataType []PowerDataType `json:"SPPowerDataType"` // Power Settings
+	PowerDataType []*PowerDataType `json:"SPPowerDataType"` // Power Settings
 }
 
 // PowerDataType - Power settings information
 type PowerDataType struct {
-	NameSetting string  `json:"_name"`
-	ACPower     ACPower `json:"AC Power,omitempty"`
-	UPSInstall  string  `json:"sppower_ups_installed"`
+	NameSetting string   `json:"_name"`
+	ACPower     *ACPower `json:"AC Power,omitempty"`
+	UPSInstall  string   `json:"sppower_ups_installed"`
 }
 
 // ACPower - Power AC information

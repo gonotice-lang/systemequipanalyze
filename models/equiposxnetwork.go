@@ -2,23 +2,23 @@ package models
 
 // DataNetwork - Network data fields
 type DataNetwork struct {
-	NetworkData []NetworkData `json:"SPNetworkDataType"`
+	NetworkData []*NetworkData `json:"SPNetworkDataType"`
 }
 
 // NetworkData - Field Network data
 type NetworkData struct {
-	AdapterName     string       `json:"_name"`                   // Name device
-	DHCPData        DHCPData     `json:"dhcp,omitempty"`          // DHCP Server Responses
-	DNSData         DNSData      `json:"DNS,omitempty"`           // DNS
-	EthernetInfo    EthernetInfo `json:"Ethernet,omitempty"`      // Ethernet
-	Hardware        string       `json:"hardware"`                // Hardware Name
-	Interface       string       `json:"interface"`               // Interface Name:
-	IPaddr          []string     `json:"ip_address,omitempty"`    // IPv4 Addresses
-	IPv4Data        IPv4Data     `json:"IPv4"`                    // IPv4
-	IPv6Data        IPv6Data     `json:"IPv6"`                    // IPv6
-	ProxiesData     ProxiesData  `json:"Proxies"`                 // Proxies
-	SubNetSrvcOrder uint8        `json:"spnetwork_service_order"` // Service Order
-	Type            string       `json:"type"`
+	AdapterName     string        `json:"_name"`                   // Name device
+	DHCPData        *DHCPData     `json:"dhcp,omitempty"`          // DHCP Server Responses
+	DNSData         *DNSData      `json:"DNS,omitempty"`           // DNS
+	EthernetInfo    *EthernetInfo `json:"Ethernet,omitempty"`      // Ethernet
+	Hardware        string        `json:"hardware"`                // Hardware Name
+	Interface       string        `json:"interface"`               // Interface Name:
+	IPaddr          []string      `json:"ip_address,omitempty"`    // IPv4 Addresses
+	IPv4Data        *IPv4Data     `json:"IPv4"`                    // IPv4
+	IPv6Data        *IPv6Data     `json:"IPv6"`                    // IPv6
+	ProxiesData     *ProxiesData  `json:"Proxies"`                 // Proxies
+	SubNetSrvcOrder uint8         `json:"spnetwork_service_order"` // Service Order
+	Type            string        `json:"type"`
 }
 
 // DHCPData - DHCP information
@@ -45,16 +45,16 @@ type EthernetInfo struct {
 
 // IPv4Data - IPv4 information
 type IPv4Data struct {
-	AddRoute      []AddRoute `json:"AdditionalRoutes,omitempty"`           // Additional Routes
-	Addresses     []string   `json:"Addresses,omitempty"`                  // Addresses
-	ARPHardResolv string     `json:"ARPResolvedHardwareAddress,omitempty"` // ARP Resolved Hardware Address
-	ARPIPResolv   string     `json:"RPResolvedIPAddress,omitempty"`        // ARP Resolved IP Address
-	ConfMethod    string     `json:"ConfigMethod"`                         // Configuration Method
-	ConfIntfName  string     `json:"ConfirmedInterfaceName,omitempty"`     // Confirmed Interface Name
-	IntfName      string     `json:"InterfaceName,omitempty"`              // Interface Name
-	NetSign       string     `json:"NetworkSignature,omitempty"`           // Network Signature
-	Router        string     `json:"Router,omitempty"`                     // Router
-	SubnetMasks   []string   `json:"SubnetMasks,omitempty"`                // Subnet Masks
+	AddRoute      []*AddRoute `json:"AdditionalRoutes,omitempty"`           // Additional Routes
+	Addresses     []string    `json:"Addresses,omitempty"`                  // Addresses
+	ARPHardResolv string      `json:"ARPResolvedHardwareAddress,omitempty"` // ARP Resolved Hardware Address
+	ARPIPResolv   string      `json:"RPResolvedIPAddress,omitempty"`        // ARP Resolved IP Address
+	ConfMethod    string      `json:"ConfigMethod"`                         // Configuration Method
+	ConfIntfName  string      `json:"ConfirmedInterfaceName,omitempty"`     // Confirmed Interface Name
+	IntfName      string      `json:"InterfaceName,omitempty"`              // Interface Name
+	NetSign       string      `json:"NetworkSignature,omitempty"`           // Network Signature
+	Router        string      `json:"Router,omitempty"`                     // Router
+	SubnetMasks   []string    `json:"SubnetMasks,omitempty"`                // Subnet Masks
 }
 
 // AddRoute - Route add information
