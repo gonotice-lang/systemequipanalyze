@@ -1,2 +1,1 @@
 # systemequipanalyze
-Ssytem informations monitoring
