@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -86,7 +85,7 @@ func InfoOS() (*models.OSInfo, []*ResultError) {
 
 // HarwareEquip - General information equipment hardware
 func HarwareEquip() (*models.DataHardware, error) {
-	var hard *models.DataHardware
+	hard := &models.DataHardware{}
 
 	cmd := exec.Command("system_profiler", "-json", "SPHardwareDataType")
 	stdout, err := cmd.Output()
@@ -115,7 +114,7 @@ func ProcEquip() (string, error) {
 
 // RAMEquip - RAM memory information
 func RAMEquip() (*models.DataMem, error) {
-	var mem *models.DataMem
+	mem := &models.DataMem{}
 
 	cmd := exec.Command("system_profiler", "-json", "SPMemoryDataType")
 	stdout, err := cmd.Output()
@@ -133,7 +132,7 @@ func RAMEquip() (*models.DataMem, error) {
 
 // StorageEquip - storage information
 func StorageEquip() (*models.DataStorage, error) {
-	var stor *models.DataStorage
+	stor := &models.DataStorage{}
 
 	cmd := exec.Command("system_profiler", "-json", "SPStorageDataType")
 	stdout, err := cmd.Output()
@@ -151,7 +150,7 @@ func StorageEquip() (*models.DataStorage, error) {
 
 // DisplayEquip - display information
 func DisplayEquip() (*models.DataDisplay, error) {
-	var disp *models.DataDisplay
+	disp := &models.DataDisplay{}
 
 	cmd := exec.Command("system_profiler", "-json", "SPDisplaysDataType")
 	stdout, err := cmd.Output()
@@ -169,7 +168,7 @@ func DisplayEquip() (*models.DataDisplay, error) {
 
 // USBEquip - usb equipments information
 func USBEquip() (*models.DataUSB, error) {
-	var usb *models.DataUSB
+	usb := &models.DataUSB{}
 
 	cmd := exec.Command("system_profiler", "-json", "SPUSBDataType")
 	stdout, err := cmd.Output()
@@ -187,7 +186,7 @@ func USBEquip() (*models.DataUSB, error) {
 
 // NetworkEquip - Network information
 func NetworkEquip() (*models.DataNetwork, error) {
-	var netw *models.DataNetwork
+	netw := &models.DataNetwork{}
 
 	cmd := exec.Command("system_profiler", "-json", "SPNetworkDataType")
 	stdout, err := cmd.Output()
@@ -200,7 +199,7 @@ func NetworkEquip() (*models.DataNetwork, error) {
 		return nil, fmt.Errorf("Failed unmarshaling: %v", err)
 	}
 
-	return netw, nil
+	return netw, err
 }
 
 // AirPortEquip - AirPort information
@@ -218,12 +217,12 @@ func AirPortEquip() (*models.DataAirPort, error) {
 		return nil, fmt.Errorf("Failed unmarshaling: %v", err)
 	}
 
-	return airp, nil
+	return airp, err
 }
 
 // EthernetEquip - Ethernet information
 func EthernetEquip() (*models.DataEthernet, error) {
-	var eth *models.DataEthernet
+	eth := &models.DataEthernet{}
 
 	cmd := exec.Command("system_profiler", "-json", "SPEthernetDataType")
 	stdout, err := cmd.Output()
@@ -236,12 +235,12 @@ func EthernetEquip() (*models.DataEthernet, error) {
 		return nil, fmt.Errorf("Failed unmarshaling: %v", err)
 	}
 
-	return eth, nil
+	return eth, err
 }
 
 // PciEquip - PCI information
 func PciEquip() (*models.DataPci, error) {
-	var pci *models.DataPci
+	pci := &models.DataPci{}
 
 	cmd := exec.Command("system_profiler", "-json", "SPPCIDataType")
 	stdout, err := cmd.Output()
@@ -254,12 +253,12 @@ func PciEquip() (*models.DataPci, error) {
 		return nil, fmt.Errorf("Failed unmarshaling: %v", err)
 	}
 
-	return pci, nil
+	return pci, err
 }
 
 // PowerEquip - Power information
 func PowerEquip() (*models.DataPower, error) {
-	var power *models.DataPower
+	power := &models.DataPower{}
 
 	cmd := exec.Command("system_profiler", "-json", "SPPowerDataType")
 	stdout, err := cmd.Output()
@@ -272,12 +271,12 @@ func PowerEquip() (*models.DataPower, error) {
 		return nil, fmt.Errorf("Failed unmarshaling: %v", err)
 	}
 
-	return power, nil
+	return power, err
 }
 
 // PrinterEquip - Printer information
 func PrinterEquip() (*models.DataPrinter, error) {
-	var printer *models.DataPrinter
+	printer := &models.DataPrinter{}
 
 	cmd := exec.Command("system_profiler", "-json", "SPPrintersDataType")
 	stdout, err := cmd.Output()
@@ -290,7 +289,43 @@ func PrinterEquip() (*models.DataPrinter, error) {
 		return nil, fmt.Errorf("Failed unmarshaling: %v", err)
 	}
 
-	return printer, nil
+	return printer, err
+}
+
+// AppsEquip - information install applications
+func AppsEquip() (*models.AppsInfo, error) {
+	app := &models.AppsInfo{}
+
+	cmd := exec.Command("system_profiler", "-json", "SPApplicationsDataType")
+	stdout, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("Failed execution command: %v", err)
+	}
+
+	json.Unmarshal(stdout, &app)
+	if err != nil {
+		return nil, fmt.Errorf("Failed unmarshaling: %v", err)
+	}
+
+	return app, nil
+}
+
+// AudioEquip - audio equipment
+func AudioEquip() (*models.AudioInfo, error) {
+	audio := &models.AudioInfo{}
+
+	cmd := exec.Command("system_profiler", "-json", "SPAudioDataType")
+	stdout, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("Failed execution command: %v", err)
+	}
+
+	json.Unmarshal(stdout, &audio)
+	if err != nil {
+		return nil, fmt.Errorf("Failed unmarshaling: %v", err)
+	}
+
+	return audio, nil
 }
 
 func removeIndex(s []string, count, index int) []string {
@@ -347,7 +382,7 @@ func DiskUsage() ([]*models.DiskUsageInfo, error) {
 func NSConnInfo(key, arg string) ([]*models.NSConn, error) {
 	var cmd *exec.Cmd
 
-	var newNetStatConn = new(models.NSConn)
+	newNetStatConn := new(models.NSConn)
 	var resNetStatConn []*models.NSConn
 
 	cmd = exec.Command("netstat", key, arg)
@@ -368,7 +403,7 @@ func NSConnInfo(key, arg string) ([]*models.NSConn, error) {
 		valFields := strings.Fields(val)
 		// add element in the end
 		if len(valFields) == 5 {
-			valFields = append(valFields, "-")
+			valFields = append(valFields, "")
 		}
 		for range valFields {
 			newNetStatConn = &models.NSConn{
@@ -420,7 +455,7 @@ func NSRouteInfo(key, arg string) (*models.NSRoute, error) {
 		valFields := strings.Fields(val)
 		// add element in the end
 		if len(valFields) == 4 {
-			valFields = append(valFields, "-")
+			valFields = append(valFields, "")
 		}
 		for range valFields {
 			newRouteInfo = &models.RouteInfo{
@@ -669,7 +704,6 @@ func ProcessInfo() ([]*models.ProcessInfo, error) {
 			resProcTime string
 			resProcCmd  string
 		)
-
 		for range resProc {
 			resPID, err = strconv.ParseUint(resProc[0], 10, 32)
 			if err != nil {
@@ -696,171 +730,171 @@ func ProcessInfo() ([]*models.ProcessInfo, error) {
 
 func main() {
 	/*
-							resOsInfo, resErr := InfoOS()
-							for _, valr := range resErr {
-								log.Printf("Error: %s in function number \"%d\", %v\n", valr.res.ErrorName, valr.res.NumbOccur, valr.err)
-							}
-							fmt.Print(resOsInfo)
-							resProcInfo, err := ProcEquip()
-							if err != nil {
-								log.Printf("Failed execution command: %v", err)
-							}
-							fmt.Print(resProcInfo)
+		resOsInfo, resErr := InfoOS()
+		for _, valr := range resErr {
+			log.Printf("Error: %s in function number \"%d\", %v\n", valr.res.ErrorName, valr.res.NumbOccur, valr.err)
+		}
+		fmt.Print(resOsInfo)
+		resProcInfo, err := ProcEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resProcInfo)
 
-							resRAMInfo, err := RAMEquip()
-							if err != nil {
-								log.Printf("Failed execution command: %v", err)
-							}
-							fmt.Print(resRAMInfo)
+		resRAMInfo, err := RAMEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resRAMInfo)
 
-							resStorInfo, err := StorageEquip()
-							if err != nil {
-								log.Printf("Failed execution command: %v", err)
-							}
-							fmt.Print(resStorInfo)
+		resStorInfo, err := StorageEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resStorInfo)
 
-						resDisplayInfo, err := DisplayEquip()
-						if err != nil {
-							log.Printf("Failed execution command: %v", err)
-						}
-						for _, resdispl := range resDisplayInfo.DisplayData {
-							fmt.Println(resdispl.DisplayName)
-							fmt.Println(resdispl.Vram)
-							fmt.Println(resdispl.DeviceID)
-							fmt.Println(resdispl.MetalFamily)
-							for _, displndrvs := range resdispl.DisplayNdrvs {
-								fmt.Println(displndrvs.DisplayEdid)
-								fmt.Println(displndrvs.TypeDisName)
-								fmt.Println(displndrvs.ProductID)
-								fmt.Println(displndrvs.SerialNumb)
-								fmt.Println(displndrvs.VendorID)
-								fmt.Println(displndrvs.Week)
-								fmt.Println(displndrvs.Year)
-								fmt.Println(displndrvs.DisplayID)
-								fmt.Println(displndrvs.Path)
-								fmt.Println(displndrvs.PortDevice)
-								fmt.Println(displndrvs.DisplayRegID)
-								fmt.Println(displndrvs.Edid)
-								fmt.Println(displndrvs.Pixels)
-								fmt.Println(displndrvs.Resolution)
-								fmt.Println(displndrvs.BrightAmb)
-								fmt.Println(displndrvs.ConnectType)
-								fmt.Println(displndrvs.Depth)
-								fmt.Println(displndrvs.DisplayType)
-								fmt.Println(displndrvs.Main)
-								fmt.Println(displndrvs.Mirror)
-								fmt.Println(displndrvs.Online)
-								fmt.Println(displndrvs.PixelRes)
-								fmt.Println(displndrvs.Resol)
-							}
-							fmt.Println(resdispl.RevisionID)
-							fmt.Println(resdispl.Vendor)
-							fmt.Println(resdispl.VramShared)
-							fmt.Println(resdispl.Bus)
-							fmt.Println(resdispl.DeviceType)
-							fmt.Println(resdispl.Model)
-						}
-								resHardInfo, err := HarwareEquip()
-								if err != nil {
-									log.Printf("Failed execution command: %v", err)
-								}
-								fmt.Print(resHardInfo)
-
-								resUsbInfo, err := USBEquip()
-								if err != nil {
-									log.Printf("Failed execution command: %v", err)
-								}
-								fmt.Print(resUsbInfo)
-
-								resNetworkInfo, err := NetworkEquip()
-								if err != nil {
-									log.Printf("Failed execution command: %v", err)
-								}
-								fmt.Print(resNetworkInfo)
-
-							resAirPortInfo, err := AirPortEquip()
-							if err != nil {
-								log.Printf("Failed execution command: %v", err)
-							}
-							for _, resAir := range resAirPortInfo.AirPortData {
-								for _, resPort := range resAir.AirPortIntf {
-									fmt.Println(resPort.IntfName)
-									fmt.Println(resPort.AirDropChan)
-									for _, wirenet := range resPort.LocalWireNet {
-										fmt.Println(*wirenet)
-									}
-									fmt.Println(resPort.CapsAirDrop)
-									fmt.Println(resPort.CapsAutoUn)
-									fmt.Println(resPort.CapsWow)
-									fmt.Println(*resPort.CurNetInfo)
-									fmt.Println(resPort.StatusInfo)
-									fmt.Println(resPort.SuppConnCh)
-									fmt.Println(resPort.SuppPhyMod)
-									fmt.Println(resPort.CardType)
-									fmt.Println(resPort.ContryCode)
-									fmt.Println(resPort.FirmWVer)
-									fmt.Println(resPort.WireLocale)
-									fmt.Println(resPort.WireMacAddr)
-								}
-								fmt.Println(*resAir.SoftInfo)
-							}
-
-								resPciInfo, err := PciEquip()
-								if err != nil {
-									log.Printf("Failed execution command: %v", err)
-								}
-								fmt.Print(resPciInfo)
-
-					resEthernetInfo, err := EthernetEquip()
-					if err != nil {
-						log.Printf("Failed execution command: %v", err)
-					}
-					fmt.Print(resEthernetInfo)
-
-				resPowerInfo, err := PowerEquip()
-				if err != nil {
-					log.Printf("Failed execution command: %v", err)
-				}
-				fmt.Print(resPowerInfo)
-
-					resPrinterInfo, err := PrinterEquip()
-					if err != nil {
-						log.Printf("Failed execution command: %v", err)
-					}
-					fmt.Print(resPrinterInfo)
-
-					resDiskUsage, err := DiskUsage()
-					if err != nil {
-						log.Printf("Failed execution command: %v", err)
-					}
-					for _, res := range resDiskUsage {
-						fmt.Println(*res)
-					}
-
-			resNSConn, err := NSConnInfo("-nap", "TCP")
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
+		resDisplayInfo, err := DisplayEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		for _, resdispl := range resDisplayInfo.DisplayData {
+			fmt.Println(resdispl.DisplayName)
+			fmt.Println(resdispl.Vram)
+			fmt.Println(resdispl.DeviceID)
+			fmt.Println(resdispl.MetalFamily)
+			for _, displndrvs := range resdispl.DisplayNdrvs {
+				fmt.Println(displndrvs.DisplayEdid)
+				fmt.Println(displndrvs.TypeDisName)
+				fmt.Println(displndrvs.ProductID)
+				fmt.Println(displndrvs.SerialNumb)
+				fmt.Println(displndrvs.VendorID)
+				fmt.Println(displndrvs.Week)
+				fmt.Println(displndrvs.Year)
+				fmt.Println(displndrvs.DisplayID)
+				fmt.Println(displndrvs.Path)
+				fmt.Println(displndrvs.PortDevice)
+				fmt.Println(displndrvs.DisplayRegID)
+				fmt.Println(displndrvs.Edid)
+				fmt.Println(displndrvs.Pixels)
+				fmt.Println(displndrvs.Resolution)
+				fmt.Println(displndrvs.BrightAmb)
+				fmt.Println(displndrvs.ConnectType)
+				fmt.Println(displndrvs.Depth)
+				fmt.Println(displndrvs.DisplayType)
+				fmt.Println(displndrvs.Main)
+				fmt.Println(displndrvs.Mirror)
+				fmt.Println(displndrvs.Online)
+				fmt.Println(displndrvs.PixelRes)
+				fmt.Println(displndrvs.Resol)
 			}
-			for _, res := range resNSConn {
-				fmt.Println(*res)
+			fmt.Println(resdispl.RevisionID)
+			fmt.Println(resdispl.Vendor)
+			fmt.Println(resdispl.VramShared)
+			fmt.Println(resdispl.Bus)
+			fmt.Println(resdispl.DeviceType)
+			fmt.Println(resdispl.Model)
+		}
+		resHardInfo, err := HarwareEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resHardInfo)
+
+		resUsbInfo, err := USBEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resUsbInfo)
+
+		resNetworkInfo, err := NetworkEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resNetworkInfo)
+
+		resAirPortInfo, err := AirPortEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		for _, resAir := range resAirPortInfo.AirPortData {
+			for _, resPort := range resAir.AirPortIntf {
+				fmt.Println(resPort.IntfName)
+				fmt.Println(resPort.AirDropChan)
+				for _, wirenet := range resPort.LocalWireNet {
+					fmt.Println(*wirenet)
+				}
+				fmt.Println(resPort.CapsAirDrop)
+				fmt.Println(resPort.CapsAutoUn)
+				fmt.Println(resPort.CapsWow)
+				fmt.Println(*resPort.CurNetInfo)
+				fmt.Println(resPort.StatusInfo)
+				fmt.Println(resPort.SuppConnCh)
+				fmt.Println(resPort.SuppPhyMod)
+				fmt.Println(resPort.CardType)
+				fmt.Println(resPort.ContryCode)
+				fmt.Println(resPort.FirmWVer)
+				fmt.Println(resPort.WireLocale)
+				fmt.Println(resPort.WireMacAddr)
 			}
+			fmt.Println(*resAir.SoftInfo)
+		}
 
-				resNSRoute, err := NSRouteInfo("-rnf", "inet")
-				if err != nil {
-					log.Printf("Failed execution command: %v", err)
-				}
-				fmt.Println("IP version: ", resNSRoute.VerIP)
-				for _, res := range resNSRoute.RouteInfo {
-					fmt.Println(*res)
-				}
+		resPciInfo, err := PciEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resPciInfo)
 
-				resArpTable, err := ARPTableInfo()
-				if err != nil {
-					log.Printf("Failed execution command: %v", err)
-				}
-				for _, res := range resArpTable {
-					fmt.Println(*res)
-				}
+		resEthernetInfo, err := EthernetEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resEthernetInfo)
+
+		resPowerInfo, err := PowerEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resPowerInfo)
+
+		resPrinterInfo, err := PrinterEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resPrinterInfo)
+
+		resDiskUsage, err := DiskUsage()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		for _, res := range resDiskUsage {
+			fmt.Println(*res)
+		}
+
+		resNSConn, err := NSConnInfo("-nap", "UDP")
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		for _, res := range resNSConn {
+			fmt.Println(*res)
+		}
+
+		resNSRoute, err := NSRouteInfo("-rnf", "inet")
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Println("IP version: ", resNSRoute.VerIP)
+		for _, res := range resNSRoute.RouteInfo {
+			fmt.Println(*res)
+		}
+
+		resArpTable, err := ARPTableInfo()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		for _, res := range resArpTable {
+			fmt.Println(*res)
+		}
 
 		resNetInf, err := NetworkIntInfo()
 		if err != nil {
@@ -881,13 +915,34 @@ func main() {
 			fmt.Println(res.Media)
 			fmt.Println(res.Status)
 		}
-	*/
 
-	resProcessInfo, err := ProcessInfo()
-	if err != nil {
-		log.Printf("Failed execution command: %v", err)
-	}
-	for _, resProc := range resProcessInfo {
-		fmt.Println(*resProc)
-	}
+		resProcessInfo, err := ProcessInfo()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		for _, resProc := range resProcessInfo {
+			fmt.Println(*resProc)
+		}
+
+		resAppsInfo, err := AppsEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+
+		for _, resApp := range resAppsInfo.Apps {
+			fmt.Println(*resApp)
+		}
+
+		resAudioInfo, err := AudioEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+
+		for _, resAudio := range resAudioInfo.AudioInf {
+			for _, resAudioIntf := range resAudio.ItemsAudio {
+				fmt.Println(*resAudioIntf)
+			}
+			fmt.Println(resAudio.NameAudio)
+		}
+	*/
 }

@@ -49,6 +49,8 @@ System Information and Equipment
 --> system_profiler SPNetworkDataType - network info
 --> system_profiler SPAirPortDataType - airports info
 --> system_profiler SPPowerDataType - system power info
+--> system_profiler SPApplicationsDataType - information application data
+--> system_profiler SPAudioDataType - audio information
 --> df -H - disk usage
 Network Interface Information
 --> ifconfig

@@ -18,7 +18,7 @@ macoscmds:
     cmd: system_profiler
     key: -json 
     args: [SPMemoryDataType, SPStorageDataType, SPDisplaysDataType, SPHardwareDataType, SPUSBDataType, SPEthernetDataType,
-    SPPCIDataType, SPNetworkDataType, SPAirPortDataType, SPPowerDataType]
+    SPPCIDataType, SPNetworkDataType, SPAirPortDataType, SPPowerDataType, SPApplicationsDataType, SPAudioDataType]
   netstat: 
     cmd: netstat
     keys: [-nap, -rnf]
