@@ -5,7 +5,7 @@ type AudioInfo struct {
 	AudioInf []*AudioIntfInfo `json:"SPAudioDataType"`
 }
 
-// AudioIntfInfo - audios
+// AudioIntfInfo - all audio
 type AudioIntfInfo struct {
 	ItemsAudio []*AudioIntf `json:"_items"`
 	NameAudio  string       `json:"_name"`

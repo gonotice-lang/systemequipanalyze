@@ -51,6 +51,7 @@ System Information and Equipment
 --> system_profiler SPPowerDataType - system power info
 --> system_profiler SPApplicationsDataType - information application data
 --> system_profiler SPAudioDataType - audio information
+--> system_profiler SPBluetoothDataType - bluetooth information
 --> df -H - disk usage
 Network Interface Information
 --> ifconfig
