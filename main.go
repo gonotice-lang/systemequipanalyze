@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -329,7 +330,7 @@ func AudioEquip() (*models.AudioInfo, error) {
 }
 
 // BluetoothEquip - bluetooth equipment
-func BluetoothEquip() (*models.BluetoothDataInfo, error) {
+func BluetoothEquip() (interface{}, error) {
 	bluetooth := &models.BluetoothDataInfo{}
 
 	cmd := exec.Command("system_profiler", "-json", "SPBluetoothDataType")
@@ -749,226 +750,227 @@ func ProcessInfo() ([]*models.ProcessInfo, error) {
 
 func main() {
 	/*
-			resOsInfo, resErr := InfoOS()
-			for _, valr := range resErr {
-				log.Printf("Error: %s in function number \"%d\", %v\n", valr.res.ErrorName, valr.res.NumbOccur, valr.err)
-			}
-			fmt.Print(resOsInfo)
-			resProcInfo, err := ProcEquip()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			fmt.Print(resProcInfo)
+		resOsInfo, resErr := InfoOS()
+		for _, valr := range resErr {
+			log.Printf("Error: %s in function number \"%d\", %v\n", valr.res.ErrorName, valr.res.NumbOccur, valr.err)
+		}
+		fmt.Print(resOsInfo)
+		resProcInfo, err := ProcEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resProcInfo)
 
-			resRAMInfo, err := RAMEquip()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			fmt.Print(resRAMInfo)
+		resRAMInfo, err := RAMEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resRAMInfo)
 
-			resStorInfo, err := StorageEquip()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			fmt.Print(resStorInfo)
+		resStorInfo, err := StorageEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resStorInfo)
 
-			resDisplayInfo, err := DisplayEquip()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
+		resDisplayInfo, err := DisplayEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		for _, resdispl := range resDisplayInfo.DisplayData {
+			fmt.Println(resdispl.DisplayName)
+			fmt.Println(resdispl.Vram)
+			fmt.Println(resdispl.DeviceID)
+			fmt.Println(resdispl.MetalFamily)
+			for _, displndrvs := range resdispl.DisplayNdrvs {
+				fmt.Println(displndrvs.DisplayEdid)
+				fmt.Println(displndrvs.TypeDisName)
+				fmt.Println(displndrvs.ProductID)
+				fmt.Println(displndrvs.SerialNumb)
+				fmt.Println(displndrvs.VendorID)
+				fmt.Println(displndrvs.Week)
+				fmt.Println(displndrvs.Year)
+				fmt.Println(displndrvs.DisplayID)
+				fmt.Println(displndrvs.Path)
+				fmt.Println(displndrvs.PortDevice)
+				fmt.Println(displndrvs.DisplayRegID)
+				fmt.Println(displndrvs.Edid)
+				fmt.Println(displndrvs.Pixels)
+				fmt.Println(displndrvs.Resolution)
+				fmt.Println(displndrvs.BrightAmb)
+				fmt.Println(displndrvs.ConnectType)
+				fmt.Println(displndrvs.Depth)
+				fmt.Println(displndrvs.DisplayType)
+				fmt.Println(displndrvs.Main)
+				fmt.Println(displndrvs.Mirror)
+				fmt.Println(displndrvs.Online)
+				fmt.Println(displndrvs.PixelRes)
+				fmt.Println(displndrvs.Resol)
 			}
-			for _, resdispl := range resDisplayInfo.DisplayData {
-				fmt.Println(resdispl.DisplayName)
-				fmt.Println(resdispl.Vram)
-				fmt.Println(resdispl.DeviceID)
-				fmt.Println(resdispl.MetalFamily)
-				for _, displndrvs := range resdispl.DisplayNdrvs {
-					fmt.Println(displndrvs.DisplayEdid)
-					fmt.Println(displndrvs.TypeDisName)
-					fmt.Println(displndrvs.ProductID)
-					fmt.Println(displndrvs.SerialNumb)
-					fmt.Println(displndrvs.VendorID)
-					fmt.Println(displndrvs.Week)
-					fmt.Println(displndrvs.Year)
-					fmt.Println(displndrvs.DisplayID)
-					fmt.Println(displndrvs.Path)
-					fmt.Println(displndrvs.PortDevice)
-					fmt.Println(displndrvs.DisplayRegID)
-					fmt.Println(displndrvs.Edid)
-					fmt.Println(displndrvs.Pixels)
-					fmt.Println(displndrvs.Resolution)
-					fmt.Println(displndrvs.BrightAmb)
-					fmt.Println(displndrvs.ConnectType)
-					fmt.Println(displndrvs.Depth)
-					fmt.Println(displndrvs.DisplayType)
-					fmt.Println(displndrvs.Main)
-					fmt.Println(displndrvs.Mirror)
-					fmt.Println(displndrvs.Online)
-					fmt.Println(displndrvs.PixelRes)
-					fmt.Println(displndrvs.Resol)
+			fmt.Println(resdispl.RevisionID)
+			fmt.Println(resdispl.Vendor)
+			fmt.Println(resdispl.VramShared)
+			fmt.Println(resdispl.Bus)
+			fmt.Println(resdispl.DeviceType)
+			fmt.Println(resdispl.Model)
+		}
+		resHardInfo, err := HarwareEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resHardInfo)
+
+		resUsbInfo, err := USBEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resUsbInfo)
+
+		resNetworkInfo, err := NetworkEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resNetworkInfo)
+
+		resAirPortInfo, err := AirPortEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		for _, resAir := range resAirPortInfo.AirPortData {
+			for _, resPort := range resAir.AirPortIntf {
+				fmt.Println(resPort.IntfName)
+				fmt.Println(resPort.AirDropChan)
+				for _, wirenet := range resPort.LocalWireNet {
+					fmt.Println(*wirenet)
 				}
-				fmt.Println(resdispl.RevisionID)
-				fmt.Println(resdispl.Vendor)
-				fmt.Println(resdispl.VramShared)
-				fmt.Println(resdispl.Bus)
-				fmt.Println(resdispl.DeviceType)
-				fmt.Println(resdispl.Model)
+				fmt.Println(resPort.CapsAirDrop)
+				fmt.Println(resPort.CapsAutoUn)
+				fmt.Println(resPort.CapsWow)
+				fmt.Println(*resPort.CurNetInfo)
+				fmt.Println(resPort.StatusInfo)
+				fmt.Println(resPort.SuppConnCh)
+				fmt.Println(resPort.SuppPhyMod)
+				fmt.Println(resPort.CardType)
+				fmt.Println(resPort.ContryCode)
+				fmt.Println(resPort.FirmWVer)
+				fmt.Println(resPort.WireLocale)
+				fmt.Println(resPort.WireMacAddr)
 			}
-			resHardInfo, err := HarwareEquip()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			fmt.Print(resHardInfo)
+			fmt.Println(*resAir.SoftInfo)
+		}
 
-			resUsbInfo, err := USBEquip()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			fmt.Print(resUsbInfo)
+		resPciInfo, err := PciEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resPciInfo)
 
-			resNetworkInfo, err := NetworkEquip()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			fmt.Print(resNetworkInfo)
+		resEthernetInfo, err := EthernetEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resEthernetInfo)
 
-			resAirPortInfo, err := AirPortEquip()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			for _, resAir := range resAirPortInfo.AirPortData {
-				for _, resPort := range resAir.AirPortIntf {
-					fmt.Println(resPort.IntfName)
-					fmt.Println(resPort.AirDropChan)
-					for _, wirenet := range resPort.LocalWireNet {
-						fmt.Println(*wirenet)
-					}
-					fmt.Println(resPort.CapsAirDrop)
-					fmt.Println(resPort.CapsAutoUn)
-					fmt.Println(resPort.CapsWow)
-					fmt.Println(*resPort.CurNetInfo)
-					fmt.Println(resPort.StatusInfo)
-					fmt.Println(resPort.SuppConnCh)
-					fmt.Println(resPort.SuppPhyMod)
-					fmt.Println(resPort.CardType)
-					fmt.Println(resPort.ContryCode)
-					fmt.Println(resPort.FirmWVer)
-					fmt.Println(resPort.WireLocale)
-					fmt.Println(resPort.WireMacAddr)
-				}
-				fmt.Println(*resAir.SoftInfo)
-			}
+		resPowerInfo, err := PowerEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resPowerInfo)
 
-			resPciInfo, err := PciEquip()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			fmt.Print(resPciInfo)
+		resPrinterInfo, err := PrinterEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Print(resPrinterInfo)
 
-			resEthernetInfo, err := EthernetEquip()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			fmt.Print(resEthernetInfo)
+		resDiskUsage, err := DiskUsage()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		for _, res := range resDiskUsage {
+			fmt.Println(*res)
+		}
 
-			resPowerInfo, err := PowerEquip()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			fmt.Print(resPowerInfo)
+		resNSConn, err := NSConnInfo("-nap", "UDP")
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		for _, res := range resNSConn {
+			fmt.Println(*res)
+		}
 
-			resPrinterInfo, err := PrinterEquip()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			fmt.Print(resPrinterInfo)
+		resNSRoute, err := NSRouteInfo("-rnf", "inet")
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		fmt.Println("IP version: ", resNSRoute.VerIP)
+		for _, res := range resNSRoute.RouteInfo {
+			fmt.Println(*res)
+		}
 
-			resDiskUsage, err := DiskUsage()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			for _, res := range resDiskUsage {
-				fmt.Println(*res)
-			}
+		resArpTable, err := ARPTableInfo()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		for _, res := range resArpTable {
+			fmt.Println(*res)
+		}
 
-			resNSConn, err := NSConnInfo("-nap", "UDP")
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
+		resNetInf, err := NetworkIntInfo()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		for _, res := range resNetInf {
+			fmt.Println(res.NameInterface)
+			fmt.Println(res.Flags)
+			fmt.Println(res.Mtu)
+			fmt.Println(res.Options)
+			fmt.Println(res.Ether)
+			fmt.Println(res.ConfigMember)
+			fmt.Println(*res.Inet)
+			for _, resInet6 := range res.Inet6 {
+				fmt.Println(resInet6.Inet6Addr, resInet6.Prefixlen, resInet6.ScopeID)
 			}
-			for _, res := range resNSConn {
-				fmt.Println(*res)
-			}
+			fmt.Println(res.Nd6Options)
+			fmt.Println(res.Media)
+			fmt.Println(res.Status)
+		}
 
-			resNSRoute, err := NSRouteInfo("-rnf", "inet")
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			fmt.Println("IP version: ", resNSRoute.VerIP)
-			for _, res := range resNSRoute.RouteInfo {
-				fmt.Println(*res)
-			}
+		resProcessInfo, err := ProcessInfo()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+		for _, resProc := range resProcessInfo {
+			fmt.Println(*resProc)
+		}
 
-			resArpTable, err := ARPTableInfo()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			for _, res := range resArpTable {
-				fmt.Println(*res)
-			}
-
-			resNetInf, err := NetworkIntInfo()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			for _, res := range resNetInf {
-				fmt.Println(res.NameInterface)
-				fmt.Println(res.Flags)
-				fmt.Println(res.Mtu)
-				fmt.Println(res.Options)
-				fmt.Println(res.Ether)
-				fmt.Println(res.ConfigMember)
-				fmt.Println(*res.Inet)
-				for _, resInet6 := range res.Inet6 {
-					fmt.Println(resInet6.Inet6Addr, resInet6.Prefixlen, resInet6.ScopeID)
-				}
-				fmt.Println(res.Nd6Options)
-				fmt.Println(res.Media)
-				fmt.Println(res.Status)
-			}
-
-			resProcessInfo, err := ProcessInfo()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-			for _, resProc := range resProcessInfo {
-				fmt.Println(*resProc)
-			}
-
-			resAppsInfo, err := AppsEquip()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-
-			for _, resApp := range resAppsInfo.Apps {
-				fmt.Println(*resApp)
-			}
-
-			resAudioInfo, err := AudioEquip()
-			if err != nil {
-				log.Printf("Failed execution command: %v", err)
-			}
-
-			for _, resAudio := range resAudioInfo.AudioInf {
-				for _, resAudioIntf := range resAudio.ItemsAudio {
-					fmt.Println(*resAudioIntf)
-				}
-				fmt.Println(resAudio.NameAudio)
-			}
-
-		resBlInfo, err := BluetoothEquip()
+		resAppsInfo, err := AppsEquip()
 		if err != nil {
 			log.Printf("Failed execution command: %v", err)
 		}
 
+		for _, resApp := range resAppsInfo.Apps {
+			fmt.Println(*resApp)
+		}
+
+		resAudioInfo, err := AudioEquip()
+		if err != nil {
+			log.Printf("Failed execution command: %v", err)
+		}
+
+		for _, resAudio := range resAudioInfo.AudioInf {
+			for _, resAudioIntf := range resAudio.ItemsAudio {
+				fmt.Println(*resAudioIntf)
+			}
+			fmt.Println(resAudio.NameAudio)
+		}
+	*/
+	resBlInfo, err := BluetoothEquip()
+	if err != nil {
+		log.Printf("Failed execution command: %v", err)
+	}
+	fmt.Println(resBlInfo)
+	/*
 		for _, resBluetooth := range resBlInfo.BluetoothInfo {
 			fmt.Println(*&resBluetooth.BlueVer)
 			for _, resBl := range resBluetooth.DeviceTitle {

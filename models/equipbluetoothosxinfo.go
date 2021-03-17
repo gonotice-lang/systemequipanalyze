@@ -7,72 +7,77 @@ type BluetoothDataInfo struct {
 
 // BluetoothInfo - bluetooth informations
 type BluetoothInfo struct {
-	BlueVer          string                       `json:"apple_bluetooth_version"`
-	DeviceTitle      []map[string]DeviceTitle     `json:"device_title"`
-	IncPortsTitle    []map[string]SetsSerialPorts `json:"incoming_serial_ports_title"`
-	LocalDeviceTitle *LocalDeviceTitle            `json:"local_device_title"`
-	OutPortsTitle    []map[string]SetsSerialPorts `json:"outgoing_serial_ports_title"`
-	ServicesTitle    []map[string]ServicesTitle   `json:"services_title"`
+	BlueVer          string                       `json:"apple_bluetooth_version"`     // Apple Bluetooth Software Version
+	DeviceTitle      []map[string]DeviceTitle     `json:"device_title"`                // Name Device
+	IncPortsTitle    []map[string]SetsSerialPorts `json:"incoming_serial_ports_title"` // Incoming Serial Ports
+	LocalDeviceTitle *LocalDeviceTitle            `json:"local_device_title"`          // Local Device Name
+	OutPortsTitle    []map[string]SetsSerialPorts `json:"outgoing_serial_ports_title"` // Outgoing Serial Ports
+	ServicesTitle    []map[string]ServicesTitle   `json:"services_title"`              // Services
 }
 
+// DeviceTitle - Device Title structure
 type DeviceTitle struct {
-	DeviceAddr     string `json:"device_addr"`
-	ClassDevice    string `json:"device_classOfDevice"`
-	CoreSpec       string `json:"device_core_spec"`
-	FmVersion      string `json:"device_fw_version"`
-	IsConfigured   string `json:"device_isconfigured"`
-	IsConnect      string `json:"device_isconnected"`
-	IsPaired       string `json:"device_ispaired"`
-	DeviceString   string `json:"device_majorClassOfDevice_string"`
-	Manufacturer   string `json:"device_manufacturer"`
-	ClassOfDevice  string `json:"device_minorClassOfDevice_string"`
-	ProductID      string `json:"device_productID"`
-	DeviceServices string `json:"device_services"`
-	SupportsEDR    string `json:"device_supportsEDR"`
-	SupportsESCO   string `json:"device_supportsESCO"`
-	SupportsSSP    string `json:"device_supportsSSP"`
-	VendorID       string `json:"device_vendorID"`
+	DeviceAddr         string `json:"device_addr"`                      // Address Device
+	ClassDevice        string `json:"device_classOfDevice"`             // Class of Device
+	CoreSpec           string `json:"device_core_spec"`                 // Bluetooth Core Spec
+	FmVersion          string `json:"device_fw_version"`                // Firmware Version
+	IsConfigured       string `json:"device_isconfigured"`              // Configured:
+	IsConnect          string `json:"device_isconnected"`               // Connected
+	IsPaired           string `json:"device_ispaired"`                  // Paired
+	ClassOfDeviceMajor string `json:"device_majorClassOfDevice_string"` // Major Type
+	Manufacturer       string `json:"device_manufacturer"`              // Manufacturer
+	ClassOfDeviceMinor string `json:"device_minorClassOfDevice_string"` // Minor Type
+	ProductID          string `json:"device_productID"`                 // Product ID
+	DeviceServices     string `json:"device_services"`                  // Services
+	SupportsEDR        string `json:"device_supportsEDR"`               // EDR Supported
+	SupportsESCO       string `json:"device_supportsESCO"`              // eSCO Supported
+	SupportsSSP        string `json:"device_supportsSSP"`               // SSP Supported
+	VendorID           string `json:"device_vendorID"`                  // Vendor ID
 }
 
+// SetsSerialPorts - serial ports maps
 type SetsSerialPorts struct {
-	DeviceAuth    string `json:"device_authentication,omitempty"`
-	DeviceChannel string `json:"device_channel,omitempty"`
-	GenAddr       string `json:"general_address,omitempty"`
+	DeviceAuth    string `json:"device_authentication,omitempty"` // Requires Authentication
+	DeviceChannel string `json:"device_channel,omitempty"`        // RFCOMM Channel
+	GenAddr       string `json:"general_address,omitempty"`       // Address
 }
 
+// LocalDeviceTitle - localdevice title
 type LocalDeviceTitle struct {
-	GeneralAddress string `json:"general_address"`
-	AutoseekKey    string `json:"general_autoseek_keyboard"`
-	AutoSeekPoint  string `json:"general_autoseek_pointing"`
-	Chipset        string `json:"general_chipset"`
-	Connectable    string `json:"general_connectable"`
-	ClassComposite string `json:"general_device_class_composite"`
-	ClassMajor     string `json:"general_device_class_major"`
-	ClassMinor     string `json:"general_device_class_minor"`
-	Discover       string `json:"general_discoverable"`
-	FwVersion      string `json:"general_fw_version"`
-	HciRevision    string `json:"general_hci_revision"`
-	HciVersion     string `json:"general_hci_version"`
-	LmpSubversion  string `json:"general_lmp_subversion"`
-	LmpVersion     string `json:"general_lmp_version"`
-	Mfg            string `json:"general_mfg"`
-	GenName        string `json:"general_name"`
-	GenPower       string `json:"general_power"`
-	GenProductID   string `json:"general_productID"`
-	RemoteWake     string `json:"general_remoteWake"`
-	ServiceClass   string `json:"general_service_class"`
-	Handoff        string `json:"general_supports_handoff"`
-	InstHotspot    string `json:"general_supports_instantHotspot"`
-	LowEnergy      string `json:"general_supports_lowEnergy"`
-	CompleteStr    string `json:"general_type_complete_string"`
-	MajorStr       string `json:"general_type_major_string"`
-	GenVendorID    string `json:"general_vendorID"`
+	GeneralAddress string `json:"general_address"`                 // Address
+	AutoseekKey    string `json:"general_autoseek_keyboard"`       // Auto Seek Keyboard:
+	AutoSeekPoint  string `json:"general_autoseek_pointing"`       // Auto Seek Pointing
+	Chipset        string `json:"general_chipset"`                 // Chipset
+	Connectable    string `json:"general_connectable"`             // Connectable
+	ClassComposite string `json:"general_device_class_composite"`  // Composite Class Of Device
+	ClassMajor     string `json:"general_device_class_major"`      // Device Class (Major)
+	ClassMinor     string `json:"general_device_class_minor"`      // Device Class (Minor)
+	Discover       string `json:"general_discoverable"`            // Discoverable
+	FwVersion      string `json:"general_fw_version"`              // Firmware Version
+	HardTransport  string `json:"general_hardware_transport"`      // Transport
+	HciRevision    string `json:"general_hci_revision"`            // HCI Revision
+	HciVersion     string `json:"general_hci_version"`             // Bluetooth Core Spec
+	LmpSubversion  string `json:"general_lmp_subversion"`          // LMP Subversion
+	LmpVersion     string `json:"general_lmp_version"`             // LMP Version
+	GenMfg         string `json:"general_mfg"`                     // Manufacturer
+	GenName        string `json:"general_name"`                    // Name
+	GenPower       string `json:"general_power"`                   // Bluetooth Power
+	GenProductID   string `json:"general_productID"`               // Product ID
+	RemoteWake     string `json:"general_remoteWake"`              // Remote wake
+	ServiceClass   string `json:"general_service_class"`           // Service Class
+	Handoff        string `json:"general_supports_handoff"`        // Handoff Supported
+	InstHotspot    string `json:"general_supports_instantHotspot"` // Instant Hot Spot Supported
+	LowEnergy      string `json:"general_supports_lowEnergy"`      // Bluetooth Low Energy Supported
+	CompleteStr    string `json:"general_type_complete_string"`    // Device Type (Complete)
+	MajorStr       string `json:"general_type_major_string"`       // Device Type (Major)
+	GenVendorID    string `json:"general_vendorID"`                // Vendor ID
 }
 
+// ServicesTitle - title service
 type ServicesTitle struct {
-	FTPRootFolder string `json:"service_FTPRootFolder,omitempty"`
-	OBEXFolder    string `json:"service_OBEXFolder,omitempty"`
-	OBEXHandle    string `json:"service_OBEXHandle_Other,omitempty"`
-	OBEXReceive   string `json:"service_OBEXReceive,omitempty"`
-	ServiceState  string `json:"service_state"`
+	FTPRootFolder string `json:"service_FTPRootFolder,omitempty"`    // Folder other devices can browse
+	OBEXFolder    string `json:"service_OBEXFolder,omitempty"`       // Folder for accepted items
+	OBEXHandle    string `json:"service_OBEXHandle_Other,omitempty"` // When other items are accepted
+	OBEXReceive   string `json:"service_OBEXReceive,omitempty"`      // When receiving items
+	ServiceState  string `json:"service_state"`                      // State
 }
